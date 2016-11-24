@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todos</title>
+</head>
+<body>
+
+<ol>
+    {% for el in todos %}
+        <li> {{ el }} </li>
+    {% endfor %}
+<h2>How to Navigate:</h2>
+<p>To see the homepage of the blog go to /blog</p>
+<a href = /blog>Home</a>
+<p>To see all blog entries go to blog/entries</p>
+<a href = /blog/entries>All Entries</a>
+<p>To see individual blog entries by index , go to blog/entries/index</p>
+<p> such as blog/entries/2</p>
+<a href = /blog/entries/2>Entry 3</a>
+<p>Blog currently has 5 entries so the indexes should be between 0-4</p>
+</ol>
+
+</body>
+</html>
