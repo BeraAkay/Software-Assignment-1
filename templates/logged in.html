@@ -6,25 +6,14 @@
 </head>
 <body>
 <ol>
-<h1>ALL BLOG ENTRIES</h1>
-<h2>{{ greet }}</h2>
-{% if request.user.username %}
-<a href="/users/logout">Logout</a>
-{% endif %}
+<h1>Welcome {{ username }}, ALL BLOG ENTRIES</h1>
 <ol>
     {% for entry,desc in entries %}
-    <h3>{{ entry }}</h3>
+    <h2>{{ entry }}</h2>
     <p>{{ desc }} </p>
     {% endfor %}
 </ol>
-<form method="POST">
-    {% csrf_token %}
-    <input name="entr">
-    <input name="desc">
-
-    <button type="submit">Submit</button>
-</form>
-<h4>How to Navigate:</h4>
+<h3>How to Navigate:</h3>
     <p>To see the homepage go to /blog</p>
 <a href = /blog>Home</a>
 <p>To see individual blog entries by index , go to blog/entries/index</p>

@@ -9,6 +9,8 @@ def signup(request):
     if request.method == "POST":
         User.objects.create_user(username=request.POST.get("username"),
                             password=request.POST.get("password"))
-        return HttpResponse("Success!")
+        #return render(request,"redirect.html",{"username" : request.POST.get("username")})
+        return HttpResponse('<meta http-equiv="refresh" content="0; url=/users/login" />')
 
     return render(request, "register.html")
+
