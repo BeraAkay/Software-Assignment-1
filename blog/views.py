@@ -4,27 +4,26 @@ from django.shortcuts import render,render_to_response
 from django.http import *
 from .models import *
 
+
 def loggedin(request):
-    entries = Blog.objects.all()
-    entry = list()
-    for item in entries:
-        entry.append((item.name,item.description))
+    entries = Blog.objects.filter(owner = request.user.id)
 
     if request.method == "POST":
-        Blog.objects.create(name=request.POST.get("entr"),
-                            description=request.POST.get("desc"))
-        entries = Blog.objects.all()
-        entry = list()
-        for item in entries:
-            entry.append((item.name, item.description))
+        new = Blog.objects.create(name=request.POST.get("entr"),
+                            description=request.POST.get("desc"),
+                            owner = request.user)
+        new.tags.add(*request.POST.getlist("tag_names"))
+        entries = Blog.objects.filter(owner = request.user.id)
 
-    return render(request,'all.html',{'entries':entry, 'greet' : "Welcome "+request.user.get_username()})
+
+    return render(request,'all.html',{'entries':entries, 'greet' : "Welcome "+request.user.get_username(),"tags":Tag.objects.all()})
 
 
 def entries(request):
     titles = list()
-    for item in Blog.objects.all():
+    for item in Blog.objects.filter(owner = request.user.id):
         titles.append((item.name , item.description))
+    titlen = len(titles)
     try:
         x=request.path
         x=x.split("/")
@@ -32,22 +31,22 @@ def entries(request):
         entry = titles[x]
         return render_to_response('template.html',{'entry':entry[0],'desc':entry[1]})
     except:
-        raise Http404('Wrong Page Index, please try between 0 and '+str(titleamount-1))
+        raise Http404('Wrong Page Index, please try between 0 and '+str(titlen-1))
 
 def allentries(request):
     entries = Blog.objects.all()
-    entry = list()
-    for item in entries:
-        entry.append((item.name,item.description))
-    if request.method == "POST":
-        Blog.objects.create(name=request.POST.get("entr"),
-                            description=request.POST.get("desc"))
-        entries = Blog.objects.all()
-        entry = list()
-        for item in entries:
-            entry.append((item.name, item.description))
+    if request.user.username :
+        entries = Blog.objects.filter(owner = request.user.id)
 
-    return render(request,'all.html',{'entries':entry})
+    if request.method == "POST":
+        new = Blog.objects.create(name=request.POST.get("entr"),
+                            description=request.POST.get("desc"),
+                            owner = request.user)
+        new.tags.add(*request.POST.getlist("tag_names"))
+        entries = Blog.objects.filter(owner = request.user.id)
+
+
+    return render(request,'all.html',{'entries':entries,"tags":Tag.objects.all()})
 
 def home(request):
     return render(request,'home.html')

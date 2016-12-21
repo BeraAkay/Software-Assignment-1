@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^todo/', include("todo.urls")),
     url(r'^users/', include("users.urls")),
+    url(r'^tags/', include("tags.urls")),
     url(r'^accounts/profile/',views.loggedin)
 ]
