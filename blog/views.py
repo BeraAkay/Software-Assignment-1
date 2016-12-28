@@ -3,20 +3,24 @@ from django.shortcuts import render,render_to_response
 # Create your views here.
 from django.http import *
 from .models import *
-
+from tags.models import Tag
+from .forms import BlogForm
 
 def loggedin(request):
-    entries = Blog.objects.filter(owner = request.user.id)
-
     if request.method == "POST":
-        new = Blog.objects.create(name=request.POST.get("entr"),
-                            description=request.POST.get("desc"),
-                            owner = request.user)
-        new.tags.add(*request.POST.getlist("tag_names"))
-        entries = Blog.objects.filter(owner = request.user.id)
+        form = BlogForm(request.POST)
+        if form.is_valid():
+            blog = form.save(commit=False)
+            blog.owner = request.user
+            blog.save()
+            form.save_m2m()
+    elif request.method == "GET":
+            form = BlogForm()
 
-
-    return render(request,'all.html',{'entries':entries, 'greet' : "Welcome "+request.user.get_username(),"tags":Tag.objects.all()})
+    return render(request,'all.html',{'entries':Blog.objects.filter(owner = request.user.id),
+                                      'greet' : "Welcome "+request.user.get_username(),
+                                      "tags":Tag.objects.all(),
+                                      "form":form})
 
 
 def entries(request):
@@ -34,19 +38,21 @@ def entries(request):
         raise Http404('Wrong Page Index, please try between 0 and '+str(titlen-1))
 
 def allentries(request):
-    entries = Blog.objects.all()
-    if request.user.username :
-        entries = Blog.objects.filter(owner = request.user.id)
 
     if request.method == "POST":
-        new = Blog.objects.create(name=request.POST.get("entr"),
-                            description=request.POST.get("desc"),
-                            owner = request.user)
-        new.tags.add(*request.POST.getlist("tag_names"))
-        entries = Blog.objects.filter(owner = request.user.id)
+        form = BlogForm(request.POST)
+        if form.is_valid():
+            blog = form.save(commit=False)
+            blog.owner = request.user
+            blog.save()
+            form.save_m2m()
+    elif request.method == "GET":
+            form = BlogForm()
 
 
-    return render(request,'all.html',{'entries':entries,"tags":Tag.objects.all()})
+    return render(request,'all.html',{'entries':Blog.objects.filter(owner = request.user.id),
+                                      "tags":Tag.objects.all(),
+                                      "form":form})
 
 def home(request):
     return render(request,'home.html')
