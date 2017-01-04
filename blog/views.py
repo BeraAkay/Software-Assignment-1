@@ -1,4 +1,7 @@
 from django.shortcuts import render,render_to_response
+from django.contrib.auth.decorators import permission_required
+from django.core.exceptions import PermissionDenied
+
 
 # Create your views here.
 from django.http import *
@@ -49,10 +52,17 @@ def allentries(request):
     elif request.method == "GET":
             form = BlogForm()
 
-
     return render(request,'all.html',{'entries':Blog.objects.filter(owner = request.user.id),
                                       "tags":Tag.objects.all(),
                                       "form":form})
 
 def home(request):
     return render(request,'home.html')
+
+@permission_required('is_superuser')
+def superall(request):
+    return render(request, "all.html", {"entries": Blog.objects.all()})
+
+@permission_required('is_superuser')
+def supersolo(request, userId):
+    return render(request, "all.html", {"entries": Blog.objects.filter(owner = userId )})

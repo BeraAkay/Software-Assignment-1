@@ -6,7 +6,7 @@
 </head>
 <body>
 <ol>
-<h1>ALL BLOG ENTRIES</h1>
+<h1>ALL BLOG ENTRIES , SUPERUSER >>  acc: superuser , pass: 123Akay45</h1>
 <h2>{{ greet }}</h2>
 {% if request.user.username %}
 <a href="/users/logout">Logout</a>
@@ -15,7 +15,7 @@
     {% for entry in entries %}
         <li>
     <h3>{{ entry.name }}</h3>
-        <p>{{ entry.owner.username }}</p>
+        <p>by : {{ entry.owner.username }}</p>
     <p>{{ entry.description }} </p>
      {% for tag in entry.tags.all %}
         {{ tag.name }}
@@ -27,7 +27,9 @@
 <form method="POST">
     {% csrf_token %}
     {{ form }}
+    {% if form %}
     <button type="submit">Submit</button>
+        {% endif %}
 </form>
 {% endif %}
 <h4>How to Navigate:</h4>
